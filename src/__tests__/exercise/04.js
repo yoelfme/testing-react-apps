@@ -7,6 +7,27 @@ import userEvent from '@testing-library/user-event'
 import Login from '../../components/login'
 
 test('submitting the form calls onSubmit with username and password', () => {
+  let submittedData = null
+  const handleSubmit = (data) => (submittedData = data)
+
+  render(<Login onSubmit={handleSubmit} />)
+
+  const usernameInput = screen.getByLabelText(/username/i)
+  const passwordInput = screen.getByLabelText(/password/i)
+  const submitButton = screen.getByRole('button', { name: /submit/i})
+
+  const username = 'jhon'
+  const password = 'password'
+  
+
+  userEvent.type(usernameInput, username)
+  userEvent.type(passwordInput, password)
+  userEvent.click(submitButton)
+
+  expect(submittedData).toEqual({ username, password})
+  screen.debug()
+  
+
   // 🐨 create a variable called "submittedData" and a handleSubmit function that
   // accepts the data and assigns submittedData to the data that was submitted
   // 💰 if you need a hand, here's what the handleSubmit function should do:
@@ -22,6 +43,7 @@ test('submitting the form calls onSubmit with username and password', () => {
   //
   // assert that submittedData is correct
   // 💰 use `toEqual` from Jest: 📜 https://jestjs.io/docs/en/expect#toequalvalue
+
 })
 
 /*
