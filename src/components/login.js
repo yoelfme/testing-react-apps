@@ -11,7 +11,7 @@ function Login({onSubmit}) {
 
     onSubmit({
       username: username.value,
-      password2: password.value,
+      password: password.value,
     })
   }
   return (
