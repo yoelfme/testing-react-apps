@@ -2,27 +2,58 @@
 // http://localhost:3000/counter-hook
 
 import * as React from 'react'
-import {render, screen, act} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import {render, act} from '@testing-library/react'
 import useCounter from '../../components/use-counter'
 
-test('exposes the count and increment/decrement functions', () => {
-  let result = null
+function setup({ initialProps = {}} = {}) {
+  const result = {}
+
   const TestComponent = () => {
-    result = useCounter()
+    result.current = useCounter(initialProps)
     return null
   }
 
   render(<TestComponent />)
 
-  expect(result.count).toBe(0)
+  return result
+}
 
-  act(() => result.increment())
-  expect(result.count).toBe(1)
+test('exposes the count and increment/decrement functions', () => {
+  const result = setup()
+
+  expect(result.current.count).toBe(0)
+
+  act(() => result.current.increment())
+  expect(result.current.count).toBe(1)
   
 
-  act(() => result.decrement())
-  expect(result.count).toBe(0)
+  act(() => result.current.decrement())
+  expect(result.current.count).toBe(0)
+}) 
+
+test('allows customization of the initial count', () => {
+  const result = setup({ initialProps: { initialCount: 3}})
+
+  expect(result.current.count).toBe(3)
+
+  act(() => result.current.increment())
+  expect(result.current.count).toBe(4)
+  
+
+  act(() => result.current.decrement())
+  expect(result.current.count).toBe(3)
 })
 
-/* eslint no-unused-vars:0 */
+test('allows customization of the step', () => {
+  const result = setup({ initialProps: { step: 2}})
+
+  expect(result.current.count).toBe(0)
+
+  act(() => result.current.increment())
+  expect(result.current.count).toBe(2)
+  
+
+  act(() => result.current.decrement())
+  expect(result.current.count).toBe(0)
+})
+
